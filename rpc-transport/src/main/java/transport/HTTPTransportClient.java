@@ -1,10 +1,12 @@
 package transport;
 
-import org.Peer;
+import
+        org.Peer;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -24,8 +26,12 @@ public class HTTPTransportClient implements TransportClient{
             httpConn.setUseCaches(false);
             httpConn.setRequestMethod("POST");
 
-            httpConn.connect();
-            IOUtils.copy(data, httpConn.getOutputStream());
+//            httpConn.connect();
+//            IOUtils.copy(data, httpConn.getOutputStream());
+
+            OutputStream out = httpConn.getOutputStream();
+            IOUtils.copy(data, out);
+            out.close();
 
             int resultCode = httpConn.getResponseCode();
             if(resultCode == HttpURLConnection.HTTP_OK){

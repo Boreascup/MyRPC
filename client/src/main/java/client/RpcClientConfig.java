@@ -11,12 +11,12 @@ import transport.HTTPTransportClient;
 import transport.TransportClient;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Data
 public class RpcClientConfig {
     private Class<? extends TransportClient> transportClass = HTTPTransportClient.class;
+    //private Class<? extends TransportClient> transportClass = TCPTransportClient.class;
     private Class<? extends Encoder> encoderClass = JsonEncoder.class;
     private Class<? extends Decoder> decoderClass = JsonDecoder.class;
     private Class<? extends TransportSelector> selectorClass =

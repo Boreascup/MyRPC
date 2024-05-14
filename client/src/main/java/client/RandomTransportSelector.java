@@ -29,7 +29,7 @@ public class RandomTransportSelector implements TransportSelector{
                 client.connect(peer);
                 clients.add(client);
             }
-            log.info("connect client: {}", peer);
+            log.info("连接了客户 {}", peer);
         }
     }
 
