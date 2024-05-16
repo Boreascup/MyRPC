@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 public class SimpleServer implements TransportServer {
@@ -21,7 +23,7 @@ public class SimpleServer implements TransportServer {
         this.handler = handler;
         try {
             this.server = HttpServer.create(new InetSocketAddress(port), 0);
-            this.server.createContext("/", new RequestHttpHandler());
+            this.server.createContext("/*", new RequestHttpHandler());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -29,8 +31,20 @@ public class SimpleServer implements TransportServer {
 
     @Override
     public void start() {
-        this.server.start();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(() -> {
+            try {
+                server.start();
+                while (!executor.isShutdown()) {
+                    Thread.sleep(1000);
+                }
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        });
+        log.info("transport start函数启动成功！");
     }
+
 
     @Override
     public void stop() {
@@ -49,10 +63,11 @@ public class SimpleServer implements TransportServer {
                 }
 
                 out.flush();
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);  // Send response headers
-                out.close();  // Close the output stream before closing the exchange
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+                out.close();
                 exchange.close();
             }
+            log.info("Client connect");
         }
     }
 
