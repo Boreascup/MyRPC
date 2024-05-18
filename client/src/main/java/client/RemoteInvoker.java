@@ -49,18 +49,22 @@ public class RemoteInvoker implements InvocationHandler {
         if(resp == null || resp.getCode()!=0){
             throw new IllegalStateException("fail to invoke remote: {}" + resp);
         }
+        log.info("invoke remote成功！");
         return resp.getData();
     }
 
     private Response invokeRemote(Request request) {
         TransportClient client = null;
-
+        log.info("远程编码解码开始！");
         try {
             client = selector.select();
 
             byte[] outBytes = encoder.encode(request);
+            log.info("编码后数值为 {}", outBytes);
             try (InputStream receive = client.write(new ByteArrayInputStream(outBytes))) {
+                log.info("client.write已执行");
                 byte[] inBytes = IOUtils.readFully(receive, receive.available());
+                log.info("readFully已执行，读取值为{}", inBytes);
                 resp = decoder.decode(inBytes, Response.class);
             }
 
@@ -73,6 +77,7 @@ public class RemoteInvoker implements InvocationHandler {
                 selector.release(client);
             }
         }
+        log.info("远程编码解码成功！");
         return resp;
     }
 

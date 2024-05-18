@@ -28,11 +28,11 @@ public class RpcServer {
         @Override
         public void onRequest(InputStream receive, OutputStream toResponse) {
             Response response = new Response();
-
+            log.info("onRequest开始调用");
             try{
                 byte[] inBytes = IOUtils.readFully(receive, receive.available());
                 Request request = decoder.decode(inBytes, Request.class);
-                log.info("get request: {}", request);
+                log.info("获得请求: {}", request);
 
                 ServiceInstance sis = serviceManager.lookup(request);
                 Object ret = serviceInvoker.invoke(sis, request);

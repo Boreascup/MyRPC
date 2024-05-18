@@ -9,16 +9,15 @@ package org;
  * 然后执行这个方法并将结果返回给客户端。
  */
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import lombok.AllArgsConstructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ServiceDescriptor {
     private String clazz;
     private String method;
@@ -31,30 +30,35 @@ public class ServiceDescriptor {
      * @param method 类里的方法
      * @return ServiceDescriptor实例
      */
-    public static ServiceDescriptor from(Class clazz, Method method){
-        ServiceDescriptor sdp = new ServiceDescriptor();
-        sdp.setClazz(clazz.getName());
-        sdp.setMethod(method.getName());
-        sdp.setReturnType(method.getReturnType().getName());
+    public static ServiceDescriptor from(Class<?> clazz, Method method) {
+        ServiceDescriptor descriptor = new ServiceDescriptor();
+        descriptor.setClazz(clazz.getName());
+        descriptor.setMethod(method.getName());
+        descriptor.setReturnType(method.getReturnType().getName());
 
-        Class[] parameterClasses = method.getParameterTypes();
-        String[] parameterType = new String[parameterClasses.length];
-        for(int i=0; i<parameterClasses.length; i++){
-            parameterType[i] = parameterClasses[i].getName();
+        Class<?>[] paramClasses = method.getParameterTypes();
+        String[] paramTypes = new String[paramClasses.length];
+        for (int i = 0; i < paramClasses.length; i++) {
+            paramTypes[i] = paramClasses[i].getName();
         }
-        sdp.setParameterType(parameterType);
-        return sdp;
+        descriptor.setParameterType(paramTypes);
+
+        return descriptor;
     }
 
     @Override
     public int hashCode() {
-        return toString().hashCode();
+        return this.toString().hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(this == obj) return true;
-        if(obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
 
         ServiceDescriptor that = (ServiceDescriptor) obj;
         return this.toString().equals(that.toString());

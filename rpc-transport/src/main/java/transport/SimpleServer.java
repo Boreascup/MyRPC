@@ -23,7 +23,8 @@ public class SimpleServer implements TransportServer {
         this.handler = handler;
         try {
             this.server = HttpServer.create(new InetSocketAddress(port), 0);
-            this.server.createContext("/*", new RequestHttpHandler());
+            this.server.createContext("/", new RequestHttpHandler());
+            log.info("初始化成功");
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -54,6 +55,7 @@ public class SimpleServer implements TransportServer {
     private class RequestHttpHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
+            log.info("handle开始调用");
             if ("POST".equals(exchange.getRequestMethod())) {
                 InputStream in = exchange.getRequestBody();
                 OutputStream out = exchange.getResponseBody();
@@ -61,13 +63,12 @@ public class SimpleServer implements TransportServer {
                 if (handler != null) {
                     handler.onRequest(in, out);
                 }
-
                 out.flush();
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 out.close();
                 exchange.close();
             }
-            log.info("Client connect");
+            log.info("handle处理成功！");
         }
     }
 
