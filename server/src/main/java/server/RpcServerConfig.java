@@ -11,8 +11,8 @@ import transport.TransportServer;
 
 @Data
 public class RpcServerConfig {
-    private Class<? extends TransportServer> transportClass = HTTPTransportServer.class;
-    //private Class<? extends TransportServer> transportClass = SimpleServer.class;
+    //private Class<? extends TransportServer> transportClass = HTTPTransportServer.class;
+    private Class<? extends TransportServer> transportClass = SimpleServer.class;
     private Class<? extends Encoder> encoderClass = JsonEncoder.class;
     private Class<? extends Decoder> decoderClass = JsonDecoder.class;
     private int port;

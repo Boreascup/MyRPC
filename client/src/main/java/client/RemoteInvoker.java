@@ -9,11 +9,10 @@ import serialization.*;
 import transport.TransportClient;
 
 import java.awt.image.RescaleOp;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 调用远程服务的代理类
@@ -52,6 +51,7 @@ public class RemoteInvoker implements InvocationHandler {
         log.info("invoke remote成功！");
         return resp.getData();
     }
+
 
     private Response invokeRemote(Request request) {
         TransportClient client = null;
