@@ -17,7 +17,10 @@ public class HTTPClient implements TransportClient {
 
     @Override
     public void connect(Peer peer) {
-        this.url = "http://" + peer.getHost() + ":" + peer.getPort();
+        if(peer.isIPv6()){
+            this.url = "http://[" + peer.getHost() + "]:" + peer.getPort();
+        }
+        else this.url = "http://" + peer.getHost() + ":" + peer.getPort();
     }
 
     @Override

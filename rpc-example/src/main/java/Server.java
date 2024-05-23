@@ -4,15 +4,23 @@ import java.util.Scanner;
 
 public class Server {
     public static void main(String[] args) {
-        int port = 0;
-        String host = "0.0.0.0";
+        int port;
+        String ipAddress;
 
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("请输入服务端监听的端口号：");
         port = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("请输入服务端监听的ip地址（默认0.0.0.0）：");
+        String inputIpAddress = scanner.nextLine();
+        if (inputIpAddress.isEmpty()) {
+            ipAddress = "0.0.0.0";
+        } else {
+            ipAddress = inputIpAddress;
+        }
 
-        RpcServer server = new RpcServer(port);
+        RpcServer server = new RpcServer(port, ipAddress);
         server.register(MyService.class, new ServiceImpl());
         server.start();
     }

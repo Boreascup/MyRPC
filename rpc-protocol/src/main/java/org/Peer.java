@@ -8,4 +8,7 @@ import lombok.Data;
 public class Peer {
     private String host;
     private int port;
+    public boolean isIPv6() {
+        return host.contains(":");
+    }
 }

@@ -81,9 +81,7 @@ public class RpcServer {
         this.net.stop();
     }
 
-    public RpcServer(int port){
-        this(new RpcServerConfig(port));
-    }
+    public RpcServer(int port, String ipAddress){ this(new RpcServerConfig(port, ipAddress)); }
 
     public RpcServer(RpcServerConfig config){
         this.config = config;

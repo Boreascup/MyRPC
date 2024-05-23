@@ -14,11 +14,15 @@ public class RpcServerConfig {
     private Class<? extends Encoder> encoderClass = JsonEncoder.class;
     private Class<? extends Decoder> decoderClass = JsonDecoder.class;
     private int port;
+    private String ipAddress;
 
     /**
+     *
      * @param port 要监听的端口号
+     * @param ipAddress 要监听的ip地址
      */
-    public RpcServerConfig(int port){
+    public RpcServerConfig(int port, String ipAddress){
         this.port = port;
+        this.ipAddress = ipAddress;
     }
 }
