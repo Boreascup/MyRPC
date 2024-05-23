@@ -1,19 +1,11 @@
 package org;
-/**
- * ServiceDescriptor通常用于在客户端和服务端之间传递服务信息。
- * 当客户端想要调用一个远程服务时
- * 它会创建一个ServiceDescriptor实例来描述这个服务
- * 然后将这个实例发送到服务端。
- * 服务端收到这个实例后
- * 可以根据其中的信息找到对应的服务类和方法
- * 然后执行这个方法并将结果返回给客户端。
- */
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -48,9 +40,10 @@ public class ServiceDescriptor {
 
     @Override
     public int hashCode() {
-        return this.toString().hashCode();
+        return Objects.hash(clazz, method, returnType, Arrays.hashCode(parameterType));
     }
 
+    //重写equals是因为map会调用此方法来判断是否有重复元素
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -61,7 +54,10 @@ public class ServiceDescriptor {
         }
 
         ServiceDescriptor that = (ServiceDescriptor) obj;
-        return this.toString().equals(that.toString());
+        return Objects.equals(clazz, that.clazz) &&
+                Objects.equals(method, that.method) &&
+                Objects.equals(returnType, that.returnType) &&
+                Arrays.equals(parameterType, that.parameterType);
     }
 
     @Override

@@ -9,9 +9,6 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * 管理RPC暴露的服务
- */
 @Slf4j
 public class ServiceManager {
     private Map<ServiceDescriptor, ServiceInstance> services;
@@ -23,17 +20,22 @@ public class ServiceManager {
     public<T> void register(Class<T> interfaceClass, T bean){
         Method[] methods = ReflectionUtils.getPublicMethods(interfaceClass);
         for(Method method : methods){
-            ServiceInstance sis = new ServiceInstance(bean, method);
-            ServiceDescriptor sdp = ServiceDescriptor.from(interfaceClass, method);
+            ServiceInstance serviceInstance = new ServiceInstance(bean, method);
+            ServiceDescriptor serviceDescriptor = ServiceDescriptor.from(interfaceClass, method);
 
-            services.put(sdp, sis);
-            log.info("注册来自于{} 的服务{}", sdp.getClazz(), sdp.getMethod());
+            services.put(serviceDescriptor, serviceInstance);
+            log.info("注册来自于{} 的服务{}", serviceDescriptor.getClazz(), serviceDescriptor.getMethod());
         }
     }
 
-    public ServiceInstance lookup(Request request){
-        ServiceDescriptor sdp = request.getService();
-        return services.get(sdp);
+    public ServiceInstance lookup(Request request) {
+        ServiceDescriptor serviceDescriptor = request.getService();
+        ServiceInstance instance = services.get(serviceDescriptor);
+        if (instance == null) {
+            log.error("Service not found for request: {}", request);
+            // throw new ServiceNotFoundException("Service not found for request: " + request);
+        }
+        return instance;
     }
 
 }

@@ -3,6 +3,51 @@ import org.Peer;
 
 import java.util.Scanner;
 
+
+
+//public class Client {
+//    public static void main(String[] args) {
+//        Scanner scanner = new Scanner(System.in);
+//
+//        System.out.println("请输入客户端的端口号：");
+//        int port = scanner.nextInt();
+//        System.out.println("请输入目标服务端 ip 地址：");
+//        String host = scanner.next();
+//
+//        Peer peer = new Peer(host, port);
+//
+//        // 创建多个客户端线程
+//        int numberOfClients = 11; // 可以调整这个数值来增加并发客户端数量
+//        for (int i = 0; i < numberOfClients; i++) {
+//            new Thread(new ClientTask(peer)).start();
+//        }
+//    }
+//}
+//
+//class ClientTask implements Runnable {
+//    private Peer peer;
+//
+//    public ClientTask(Peer peer) {
+//        this.peer = peer;
+//    }
+//
+//    @Override
+//    public void run() {
+//        RpcClient client = new RpcClient(peer);
+//        MyService service = client.getProxy(MyService.class);
+//
+//        // 执行服务方法
+//        int r1 = service.add(1, 2);
+//        int r2 = service.minus(10, 8);
+//
+//        // 打印结果
+//        System.out.println(Thread.currentThread().getName() + ": " + r1);
+//        System.out.println(Thread.currentThread().getName() + ": " + r2);
+//    }
+//}
+
+
+
 public class Client {
     public static void main(String[] args){
         Scanner scanner = new Scanner(System.in);

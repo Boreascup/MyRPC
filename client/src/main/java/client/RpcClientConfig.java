@@ -7,8 +7,7 @@ import serialization.Decoder;
 import serialization.Encoder;
 import serialization.JsonDecoder;
 import serialization.JsonEncoder;
-import transport.HTTPTransportClient;
-import transport.SimpleTransportClient;
+import transport.HTTPClient;
 import transport.TransportClient;
 
 import java.util.ArrayList;
@@ -16,13 +15,12 @@ import java.util.List;
 
 @Data
 public class RpcClientConfig {
-    //private Class<? extends TransportClient> transportClass = HTTPTransportClient.class;
-    private Class<? extends TransportClient> transportClass = SimpleTransportClient.class;
+    private Class<? extends TransportClient> transportClass = HTTPClient.class;
     private Class<? extends Encoder> encoderClass = JsonEncoder.class;
     private Class<? extends Decoder> decoderClass = JsonDecoder.class;
     private Class<? extends TransportSelector> selectorClass =
             RoundRobinTransportSelector.class;
-    private int connectCount = 1;
+    private int connectCount = 3;
     private List<Peer> servers = new ArrayList<>();;
 
     public RpcClientConfig(Peer peer){

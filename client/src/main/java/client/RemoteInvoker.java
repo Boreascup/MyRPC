@@ -46,7 +46,7 @@ public class RemoteInvoker implements InvocationHandler {
 
         resp = invokeRemote(request);
         if(resp == null || resp.getCode()!=0){
-            throw new IllegalStateException("fail to invoke remote: {}" + resp);
+            throw new IllegalStateException("invoke remote失败: {}" + resp);
         }
         log.info("invoke remote成功！");
         return resp.getData();
@@ -60,18 +60,18 @@ public class RemoteInvoker implements InvocationHandler {
             client = selector.select();
 
             byte[] outBytes = encoder.encode(request);
-            log.info("编码后数值为 {}", outBytes);
+            //log.info("编码后数值为 {}", outBytes);
             try (InputStream receive = client.write(new ByteArrayInputStream(outBytes))) {
-                log.info("client.write已执行");
+                //log.info("client.write已执行");
                 byte[] inBytes = IOUtils.readFully(receive, receive.available());
-                log.info("readFully已执行，读取值为{}", inBytes);
+                //log.info("readFully已执行，读取值为{}", inBytes);
                 resp = decoder.decode(inBytes, Response.class);
             }
 
         } catch (IOException e) {
             log.warn(e.getMessage(), e);
             resp.setCode(1);
-            resp.setMessage("RpcClient got error: " + e.getClass() + ":" + e.getMessage());
+            resp.setMessage("RpcClient发生异常: " + e.getClass() + ":" + e.getMessage());
         } finally {
             if (client != null) {
                 selector.release(client);

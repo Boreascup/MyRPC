@@ -9,7 +9,7 @@ public class Server {
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("请输入服务端监听的端口号：");//这个端口号是服务端自己的。服务端只需要自己监听自己，等待调用就可以了。
+        System.out.println("请输入服务端监听的端口号：");
         port = scanner.nextInt();
 
         RpcServer server = new RpcServer(port);
