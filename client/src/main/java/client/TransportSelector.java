@@ -1,6 +1,6 @@
 package client;
 
-import org.Peer;
+import protocol.Peer;
 import transport.TransportClient;
 
 import java.util.List;

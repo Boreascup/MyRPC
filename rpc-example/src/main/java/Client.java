@@ -1,5 +1,5 @@
 import client.RpcClient;
-import org.Peer;
+import protocol.Peer;
 
 import java.util.Scanner;
 

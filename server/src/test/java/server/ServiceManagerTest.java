@@ -1,9 +1,8 @@
 package server;
 
-import common.utils.ReflectionUtils;
 //import junit.framework.TestCase;
-import org.Request;
-import org.ServiceDescriptor;
+import protocol.Request;
+import protocol.ServiceDescriptor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

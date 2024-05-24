@@ -9,13 +9,13 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>rpc-common</module>
         <module>rpc-serialization</module>
         <module>rpc-protocol</module>
         <module>server</module>
         <module>client</module>
         <module>rpc-transport</module>
         <module>rpc-example</module>
+        <module>common</module>
     </modules>
 
     <properties>

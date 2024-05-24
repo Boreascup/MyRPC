@@ -1,8 +1,7 @@
 package server;
 
+import protocol.Request;
 import common.utils.ReflectionUtils;
-import org.Request;
-
 /**
  * 调用server实例的服务类
  * 调用具体服务

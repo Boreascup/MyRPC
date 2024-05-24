@@ -1,10 +1,9 @@
 package server;
 
-import common.utils.ReflectionUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.Request;
-import org.ServiceDescriptor;
-
+import protocol.Request;
+import protocol.ServiceDescriptor;
+import common.utils.ReflectionUtils;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

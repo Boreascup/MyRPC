@@ -2,7 +2,7 @@ package client;
 
 
 import lombok.Data;
-import org.Peer;
+import protocol.Peer;
 import serialization.Decoder;
 import serialization.Encoder;
 import serialization.JsonDecoder;
@@ -21,7 +21,7 @@ public class RpcClientConfig {
     private Class<? extends TransportSelector> selectorClass =
             RoundRobinTransportSelector.class;
     private int connectCount = 3;
-    private List<Peer> servers = new ArrayList<>();;
+    private List<Peer> servers = new ArrayList<>();
 
     public RpcClientConfig(Peer peer){
         this.servers.add(peer);

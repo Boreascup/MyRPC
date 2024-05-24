@@ -1,6 +1,6 @@
 package transport;
 
-import org.Peer;
+import protocol.Peer;
 
 import java.io.InputStream;
 import java.net.SocketTimeoutException;

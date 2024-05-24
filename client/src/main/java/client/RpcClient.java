@@ -1,10 +1,9 @@
 package client;
 
-import common.utils.ReflectionUtils;
-import org.Peer;
+import protocol.Peer;
 import serialization.Decoder;
 import serialization.Encoder;
-
+import common.utils.ReflectionUtils;
 import java.lang.reflect.Proxy;
 
 public class RpcClient {
