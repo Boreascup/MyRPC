@@ -3,6 +3,8 @@ package transport;
 import org.Peer;
 
 import java.io.InputStream;
+import java.net.SocketTimeoutException;
+
 /**
  * 1.创建连接
  * 2.发送数据，并等待响应
@@ -10,7 +12,7 @@ import java.io.InputStream;
  */
 public interface TransportClient {
     void connect(Peer peer);
-    InputStream write(InputStream data);
+    InputStream write(InputStream data) throws SocketTimeoutException;
     void close();
 }
 

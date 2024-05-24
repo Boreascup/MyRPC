@@ -7,22 +7,20 @@ import org.ServiceDescriptor;
 import org.apache.commons.io.IOUtils;
 import serialization.*;
 import transport.TransportClient;
-
-import java.awt.image.RescaleOp;
 import java.io.*;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
+import java.net.SocketTimeoutException;
 
 /**
  * 调用远程服务的代理类
  */
 @Slf4j
 public class RemoteInvoker implements InvocationHandler {
-    private Class clazz;
-    private Encoder encoder;
-    private Decoder decoder;
-    private TransportSelector selector;
+    private final Class clazz;
+    private final Encoder encoder;
+    private final Decoder decoder;
+    private final TransportSelector selector;
     private Response resp;
     RemoteInvoker(Class clazz,
                   Encoder encoder,
@@ -38,7 +36,7 @@ public class RemoteInvoker implements InvocationHandler {
     @Override
     public Object invoke(Object proxy,
                          Method method,
-                         Object[] args) throws Throwable {
+                         Object[] args) {
 
         Request request = new Request();
         request.setService(ServiceDescriptor.from(clazz, method));
@@ -46,38 +44,34 @@ public class RemoteInvoker implements InvocationHandler {
 
         resp = invokeRemote(request);
         if(resp == null || resp.getCode()!=0){
-            throw new IllegalStateException("invoke remote失败: {}" + resp);
+            throw new IllegalStateException("RPC远程调用失败, " + resp.getMessage());
         }
-        log.info("invoke remote成功！");
+        log.info("RPC调用成功！");
         return resp.getData();
     }
 
 
     private Response invokeRemote(Request request) {
         TransportClient client = null;
-        log.info("远程编码解码开始！");
+        log.info("RPC正在远程调用");
         try {
             client = selector.select();
 
             byte[] outBytes = encoder.encode(request);
             //log.info("编码后数值为 {}", outBytes);
-            try (InputStream receive = client.write(new ByteArrayInputStream(outBytes))) {
-                //log.info("client.write已执行");
-                byte[] inBytes = IOUtils.readFully(receive, receive.available());
-                //log.info("readFully已执行，读取值为{}", inBytes);
-                resp = decoder.decode(inBytes, Response.class);
-            }
-
+            InputStream receive = client.write(new ByteArrayInputStream(outBytes));
+            //log.info("client.write已执行");
+            byte[] inBytes = IOUtils.readFully(receive, receive.available());
+            //log.info("readFully已执行，读取值为{}", inBytes);
+            resp = decoder.decode(inBytes, Response.class);
         } catch (IOException e) {
-            log.warn(e.getMessage(), e);
             resp.setCode(1);
-            resp.setMessage("RpcClient发生异常: " + e.getClass() + ":" + e.getMessage());
+            resp.setMessage(e.getMessage());
         } finally {
             if (client != null) {
                 selector.release(client);
             }
         }
-        log.info("远程编码解码成功！");
         return resp;
     }
 

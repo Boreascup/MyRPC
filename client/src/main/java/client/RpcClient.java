@@ -8,10 +8,10 @@ import serialization.Encoder;
 import java.lang.reflect.Proxy;
 
 public class RpcClient {
-    private RpcClientConfig config;
-    private Encoder encoder;
-    private Decoder decoder;
-    private TransportSelector selector;
+    private final RpcClientConfig config;
+    private final Encoder encoder;
+    private final Decoder decoder;
+    private final TransportSelector selector;
 
     public RpcClient(Peer peer){
         this(new RpcClientConfig(peer));
