@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>rpc-transport</artifactId>
+    <artifactId>transport</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -28,18 +28,18 @@
         </dependency>
         <dependency>
             <groupId>org.example</groupId>
-            <artifactId>rpc-protocol</artifactId>
+            <artifactId>protocol</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.example</groupId>
-            <artifactId>rpc-protocol</artifactId>
+            <artifactId>protocol</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.example</groupId>
-            <artifactId>rpc-protocol</artifactId>
+            <artifactId>protocol</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

@@ -19,13 +19,13 @@
     <dependencies>
         <dependency>
             <groupId>org.example</groupId>
-            <artifactId>rpc-transport</artifactId>
+            <artifactId>transport</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.example</groupId>
-            <artifactId>rpc-serialization</artifactId>
+            <artifactId>serialization</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

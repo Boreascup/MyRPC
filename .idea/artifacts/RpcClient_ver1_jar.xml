@@ -3,10 +3,10 @@
     <output-path>$PROJECT_DIR$/jar文件/ClientJar</output-path>
     <root id="archive" name="MyRPC.jar">
       <element id="module-output" name="rpc-common" />
-      <element id="module-output" name="rpc-serialization" />
-      <element id="module-output" name="rpc-protocol" />
+      <element id="module-output" name="serialization" />
+      <element id="module-output" name="protocol" />
       <element id="module-output" name="server" />
-      <element id="module-output" name="rpc-transport" />
+      <element id="module-output" name="transport" />
       <element id="module-output" name="client" />
       <element id="module-output" name="rpc-example" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar" path-in-jar="/" />
