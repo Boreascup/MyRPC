@@ -28,7 +28,7 @@ public class RpcServer {
         @Override
         public void onRequest(InputStream receive, OutputStream toResponse) {
             Response response = new Response();
-            log.info("onRequest开始调用");
+            //log.info("onRequest开始调用");
             try {
                 byte[] inBytes = IOUtils.readFully(receive, receive.available());
                 Request request = decoder.decode(inBytes, Request.class);
