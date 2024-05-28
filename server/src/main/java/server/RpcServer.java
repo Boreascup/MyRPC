@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import protocol.Request;
 import protocol.Response;
 import org.apache.commons.io.IOUtils;
+import registry.RegistryCenter;
 import serialization.Decoder;
 import serialization.Encoder;
 import transport.RequestHandler;
@@ -47,13 +48,11 @@ public class RpcServer {
                 //log.info("已设置正常响应头");
                 toResponse.write(responseBody);
                 //log.info("编码后的响应体：{}", new String(responseBody, StandardCharsets.UTF_8));
-
                 toResponse.flush();
 
             } catch (Exception e) {
-                log.warn(e.getMessage(), e);
-                response.setCode(1);
-                response.setMessage("RPCServer发生异常: "
+                //log.warn(e.getMessage(), e);
+                response.fail("RPCServer发生异常: "
                         + e.getClass().getName()
                         + ": " + e.getMessage());
 

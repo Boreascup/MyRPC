@@ -64,8 +64,7 @@ public class RemoteInvoker implements InvocationHandler {
             //log.info("readFully已执行，读取值为{}", inBytes);
             resp = decoder.decode(inBytes, Response.class);
         } catch (IOException e) {
-            resp.setCode(1);
-            resp.setMessage(e.getMessage());
+            resp.fail(e.getMessage());
         } finally {
             if (client != null) {
                 selector.release(client);

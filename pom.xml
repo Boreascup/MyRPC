@@ -16,6 +16,7 @@
         <module>transport</module>
         <module>rpc-example</module>
         <module>common</module>
+        <module>registry</module>
     </modules>
 
     <properties>
