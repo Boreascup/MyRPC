@@ -37,7 +37,7 @@ public class HTTPServer implements TransportServer {
             try {
                 Socket clientSocket = serverSocket.accept();
                 new Thread(() -> handleRequest(clientSocket)).start();
-                log.info("服务器已与一个客户端建立连接");
+                //log.info("服务器已与一个客户端建立连接");
             } catch (IOException e) {
                 log.error("与客户端连接失败: {}", e.getMessage());
             }
@@ -97,7 +97,7 @@ public class HTTPServer implements TransportServer {
                 handler.onRequest(requestBodyStream, out);
 
             }
-            log.info("成功处理远程调用请求!");
+            //log.info("成功处理远程调用请求!");
             out.flush();
         } catch (IOException e) {
             log.error("处理请求失败: {}", e.getMessage());

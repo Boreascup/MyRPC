@@ -25,7 +25,7 @@ public class RoundRobinTransportSelector implements TransportSelector{
                 client.connect(peer);
                 clients.add(client);
             }
-            log.info("连接了客户 {}", peer);
+            //log.info("连接了客户 {}", peer);
         }
     }
 

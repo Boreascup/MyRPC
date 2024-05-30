@@ -9,23 +9,65 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.Scanner;
 
 @Slf4j
 public class Client {
-    int timeoutMillis = 3000; // 超时时间为3秒
     public static void main(String[] args) {
         /**
          * 向注册中心查询
          */
-        Scanner scanner = new Scanner(System.in);
+        String registryHost = "";
+        int registryPort = -1;
+        String serviceName = "";
 
-        System.out.println("请输入注册中心 ip 地址：");
-        String registryHost = String.valueOf(scanner.next());
-        System.out.println("请输入注册中心端口号：");
-        int registryPort = scanner.nextInt();
-        System.out.println("请输入要调用的服务名：");
-        String serviceName = String.valueOf(scanner.next());
+
+//        Scanner scanner = new Scanner(System.in);
+//
+//        System.out.println("请输入注册中心 ip 地址：");
+//        registryHost = String.valueOf(scanner.next());
+//        System.out.println("请输入注册中心端口号：");
+//        registryPort = scanner.nextInt();
+//        System.out.println("请输入要调用的服务名：");
+//        serviceName = String.valueOf(scanner.next());
+
+        for (int i = 0; i < args.length; i++) {
+            switch (args[i]) {
+                case "-p":
+                    if (i + 1 < args.length)
+                        registryPort = Integer.parseInt(args[++i]);
+                    break;
+                case "-i":
+                    if (i + 1 < args.length)
+                        registryHost = args[++i];
+                    break;
+                case "-n":
+                    if (i + 1 < args.length)
+                        serviceName = String.valueOf(args[++i]);
+                    break;
+                case "-h":
+                    System.out.println("帮助：\n-p: 注册中心端口号，不得为空\n-i: 注册中心ip地址，不得为空\n-n: 需要调用的服务名称，不得为空\n");
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("未知参数：" + args[i]);
+                    System.exit(1);
+            }
+        }
+
+        if(registryHost == ""){
+            System.out.println("请输入注册中心 ip 地址！");
+            System.exit(1);
+        }
+        if(registryPort < 0){
+            System.out.println("请输入注册中心端口号！");
+            System.exit(1);
+        }
+        if(serviceName == ""){
+            System.out.println("请输入要调用的服务名！");
+            System.exit(1);
+        }
+
+
         String response;
         String myresponse = null;
 
@@ -33,7 +75,7 @@ public class Client {
             socket.connect(new InetSocketAddress(registryHost, registryPort), 5000);
             socket.setSoTimeout(5000);
 
-            try (PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            try (PrintWriter out = new  PrintWriter(socket.getOutputStream(), true);
                  BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
                 out.println("query"); // 发送查询请求类型
@@ -51,7 +93,7 @@ public class Client {
         }
 
 
-        //从注册中心返回信息中自动获取端口号和ip地址
+        //从注册中心返回信息中 获取端口号和ip地址
         String[] address = new String[0];
         if (myresponse != null) {
             address = myresponse.split(":");

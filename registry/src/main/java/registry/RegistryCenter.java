@@ -12,18 +12,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * 维护一个map，key是服务名，value是服务端端口号和ip的自定义类的list
- * 客户端不需要知道服务器地址。客户端知道注册中心的地址和希望调用的服务的名字
- * 向注册中心发出查询请求，注册中心返回服务器的端口和ip(如果有多个，会用到负载均衡来选择一个）
- * 然后剩下的操作是一样的
- * 考虑多线程问题
- */
-
 
 public class RegistryCenter {
     private static final Map<String, List<String>> serviceRegistry = new ConcurrentHashMap<>();
-
     public static void main(String[] args) {
         String host = "127.0.0.1";
         int port = 2024;
@@ -43,13 +34,12 @@ public class RegistryCenter {
             e.printStackTrace();
         }
     }
+
     private static class ServiceHandler implements Runnable {
         private final Socket socket;
-
         public ServiceHandler(Socket socket) {
             this.socket = socket;
         }
-
         @Override
         public void run() {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -61,7 +51,7 @@ public class RegistryCenter {
                     while ((serviceName = in.readLine()) != null) {
                         String serviceAddress = in.readLine();
                         registerService(serviceName, serviceAddress);
-                        out.println("服务“" + serviceName + "” 已注册到注册中心，地址为" + serviceAddress);
+                        out.println("服务“" + serviceName + "” 已注册到注册中心");
                     }
                 } else if ("query".equals(requestType)) {
                     String serviceName = in.readLine();

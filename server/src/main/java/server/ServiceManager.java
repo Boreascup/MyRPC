@@ -24,7 +24,7 @@ public class ServiceManager {
             ServiceDescriptor serviceDescriptor = ServiceDescriptor.from(interfaceClass, method);
 
             services.put(serviceDescriptor, serviceInstance);
-            log.info("注册来自于{} 的服务{}", serviceDescriptor.getClazz(), serviceDescriptor.getMethod());
+            //log.info("注册来自于{} 的服务{}", serviceDescriptor.getClazz(), serviceDescriptor.getMethod());
         }
     }
 
