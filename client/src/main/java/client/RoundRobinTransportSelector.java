@@ -2,8 +2,9 @@ package client;
 
 import lombok.extern.slf4j.Slf4j;
 import protocol.Peer;
+import reflection.ReflectionUtils;
 import transport.TransportClient;
-import common.utils.ReflectionUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 

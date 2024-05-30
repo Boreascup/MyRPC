@@ -1,8 +1,8 @@
 package transport;
 
 import lombok.extern.slf4j.Slf4j;
-import protocol.Peer;
 import org.apache.commons.io.IOUtils;
+import protocol.Peer;
 
 import java.io.InputStream;
 import java.io.OutputStream;

@@ -1,4 +1,4 @@
-package common.utils;
+package reflection;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;

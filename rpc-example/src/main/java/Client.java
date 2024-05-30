@@ -1,8 +1,12 @@
 import client.RpcClient;
 import protocol.Peer;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.Scanner;
-
 
 
 //public class Client {
@@ -49,15 +53,40 @@ import java.util.Scanner;
 
 
 public class Client {
-    public static void main(String[] args){
+    public static void main(String[] args) {
+        /**
+         * 向注册中心查询
+         */
         Scanner scanner = new Scanner(System.in);
+        System.out.println("请输入要调用的服务名：");
+        String serviceName = String.valueOf(scanner.next());
+        String registryHost = "127.0.0.1"; // 注册中心地址
+        int registryPort = 2024; // 注册中心端口
 
-        System.out.println("请输入客户端的端口号：");
-        int port = scanner.nextInt();
-        System.out.println("请输入目标服务端 ip 地址：");
-        String host = String.valueOf(scanner.next());
+        String response = null;
+        String myresponse = null;
+        try (Socket socket = new Socket(registryHost, registryPort);
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
-        Peer peer = new Peer(host, port);
+            out.println("query"); // 发送查询请求类型
+            out.println(serviceName); // 发送要查询的服务名
+
+            while ((response = in.readLine()) != null) {
+                myresponse = response;
+                System.out.println("Service address: " + response);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+//        System.out.println("请输入客户端的端口号：");
+//        int port = scanner.nextInt();
+//        System.out.println("请输入目标服务端 ip 地址：");
+//        String host = String.valueOf(scanner.next());
+        String[] address = myresponse.split(":");
+        Peer peer = new Peer(address[0], Integer.parseInt(address[1]));
 
         RpcClient client = new RpcClient(peer);
         MyService service = client.getProxy(MyService.class);

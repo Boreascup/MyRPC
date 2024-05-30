@@ -1,13 +1,16 @@
 package registry;
 
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import protocol.Peer;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -21,74 +24,74 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class RegistryCenter {
-    private Map<String, List<Peer>> services = new ConcurrentHashMap<>();
-
-    //注册服务
-    public void registerService(String serviceName, Peer serviceInfo) {
-        if (!services.containsKey(serviceName)) {
-            services.put(serviceName, new ArrayList<>());
-        }
-        services.get(serviceName).add(serviceInfo);
-    }
-
-    // 从注册中心获取服务列表
-    public List<Peer> discoverServices(String serviceName) {
-        return services.getOrDefault(serviceName, new ArrayList<>());
-    }
-
+    private static Map<String, List<String>> serviceRegistry = new ConcurrentHashMap<>();
 
     public static void main(String[] args) {
-        int port = 2024;
+        int port = 2024;//注册中心端口
         try {
             ServerSocket serverSocket = new ServerSocket(port);
             System.out.println("Registry center running on port " + port);
 
             while (true) {
-                Socket socket = serverSocket.accept();
-                //TODO
+                try {
+                    Socket socket = serverSocket.accept();
+                    new Thread(new ServiceHandler(socket)).start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    private static class ServiceHandler implements Runnable {
+        private Socket socket;
 
-//    private static class ClientHandler extends Thread {
-//        private Socket socket;
-//
-//        public ClientHandler(Socket socket) {
-//            this.socket = socket;
-//        }
-//
-//        @Override
-//        public void run() {
-//            try {
-//                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-//
-//                String request = in.readLine();
-//                String[] parts = request.split(",");
-//                String command = parts[0];
-//                String serviceName = parts[1];
-//
-//                if ("REGISTER".equals(command)) {
-//                    String serviceAddress = parts[2];
-//                    int servicePort = Integer.parseInt(parts[3]);
-//                    services.put(serviceName, new ServiceInfo(serviceAddress, servicePort));
-//                    out.println("Service registered successfully");
-//                } else if ("DISCOVER".equals(command)) {
-//                    ServiceInfo serviceInfo = services.get(serviceName);
-//                    if (serviceInfo != null) {
-//                        out.println("Service address: " + serviceInfo.getAddress() + ", Service port: " + serviceInfo.getPort());
-//                    } else {
-//                        out.println("Service not found");
-//                    }
-//                }
-//
-//                socket.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-//
+        public ServiceHandler(Socket socket) {
+            this.socket = socket;
+        }
+
+        @Override
+        public void run() {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+
+                String requestType = in.readLine(); // 读取请求类型（"register" 或 "query"）
+                if ("register".equals(requestType)) {
+                    String serviceName;
+                    while ((serviceName = in.readLine()) != null) {
+                        String serviceAddress = in.readLine();
+                        registerService(serviceName, serviceAddress);
+                        out.println("Service " + serviceName + " registered with address " + serviceAddress);
+                    }
+                } else if ("query".equals(requestType)) {
+                    String serviceName = in.readLine();
+                    List<String> addresses = serviceRegistry.get(serviceName);
+                    if (addresses != null && !addresses.isEmpty()) {
+//                        for (String address : addresses) {
+//                            out.println(address);
+//                        }
+                        out.println(addresses.get(0));//如果有多个地址，只会返回第一个。这里可以加负载均衡！
+                    } else {
+                        out.println("Service not found");
+                    }
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        private void registerService(String serviceName, String serviceAddress) {
+            serviceRegistry.compute(serviceName, (key, addresses) -> {
+                if (addresses == null) {
+                    addresses = new ArrayList<>();
+                }
+                addresses.add(serviceAddress);
+                return addresses;
+            });
+        }
+    }
+
 }

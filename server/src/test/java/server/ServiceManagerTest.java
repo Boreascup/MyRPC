@@ -1,12 +1,14 @@
 package server;
 
 //import junit.framework.TestCase;
-import protocol.Request;
-import protocol.ServiceDescriptor;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import common.utils.ReflectionUtils;
+import protocol.Request;
+import protocol.ServiceDescriptor;
+import reflection.ReflectionUtils;
+
 import java.lang.reflect.Method;
 
 public class ServiceManagerTest {

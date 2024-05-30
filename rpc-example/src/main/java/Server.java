@@ -1,5 +1,12 @@
+import reflection.ReflectionUtils;
 import server.RpcServer;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.lang.reflect.Method;
+import java.net.Socket;
 import java.util.Scanner;
 
 public class Server {
@@ -11,6 +18,37 @@ public class Server {
 
         System.out.println("请输入服务端监听的端口号：");
         port = scanner.nextInt();
+
+        /**
+         * 向注册中心注册服务
+         */
+        String serviceAddress = "127.0.0.1:" + port; // 服务器运行地址
+        String registryHost = "127.0.0.1"; // 注册中心地址
+        int registryPort = 2024; // 注册中心端口
+        Method[] methods = ReflectionUtils.getPublicMethods(MyService.class);
+        String[] methodName = new String[methods.length];
+        for (int i = 0; i < methods.length; i++) {
+            methodName[i] = methods[i].getName();
+        }
+
+        try (Socket socket = new Socket(registryHost, registryPort);
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+
+            out.println("register");
+
+            for(int i=0; i<methods.length; i++){
+                out.println(methodName[i]);
+                out.println(serviceAddress);
+                String response = in.readLine();
+                System.out.println("Response from registry: " + response);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         scanner.nextLine();
         System.out.println("请输入服务端监听的ip地址（默认0.0.0.0）：");
         String inputIpAddress = scanner.nextLine();

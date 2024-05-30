@@ -9,8 +9,6 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>serialization</module>
-        <module>protocol</module>
         <module>server</module>
         <module>client</module>
         <module>transport</module>

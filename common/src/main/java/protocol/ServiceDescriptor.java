@@ -1,8 +1,9 @@
 package protocol;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Objects;
