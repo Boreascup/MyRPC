@@ -18,11 +18,21 @@ public class Server {
 
         System.out.println("请输入服务端监听的端口号：");
         port = scanner.nextInt();
+        if(port > 65535) throw new IllegalArgumentException("Port value out of range:" + port);
+        scanner.nextLine();
+        System.out.println("请输入服务端监听的ip地址（默认0.0.0.0）：");
+        String inputIpAddress = scanner.nextLine();
+        if (inputIpAddress.isEmpty()) {
+            ipAddress = "0.0.0.0";
+        } else {
+            ipAddress = inputIpAddress;
+        }
+
 
         /**
          * 向注册中心注册服务
          */
-        String serviceAddress = "127.0.0.1:" + port; // 服务器运行地址
+        String serviceAddress = ipAddress + ":" + port; // 服务器运行地址
         String registryHost = "127.0.0.1"; // 注册中心地址
         int registryPort = 2024; // 注册中心端口
         Method[] methods = ReflectionUtils.getPublicMethods(MyService.class);
@@ -41,22 +51,13 @@ public class Server {
                 out.println(methodName[i]);
                 out.println(serviceAddress);
                 String response = in.readLine();
-                System.out.println("Response from registry: " + response);
+                System.out.println("注册中心回复: " + response);
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-
-        scanner.nextLine();
-        System.out.println("请输入服务端监听的ip地址（默认0.0.0.0）：");
-        String inputIpAddress = scanner.nextLine();
-        if (inputIpAddress.isEmpty()) {
-            ipAddress = "0.0.0.0";
-        } else {
-            ipAddress = inputIpAddress;
-        }
 
         RpcServer server = new RpcServer(port, ipAddress);
         server.register(MyService.class, new ServiceImpl());

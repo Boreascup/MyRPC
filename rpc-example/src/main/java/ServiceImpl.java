@@ -1,11 +1,12 @@
 public class ServiceImpl implements MyService{
+
     @Override
-    public int add(int a, int b) {
-        return a+b;
+    public String sayHello(String name) {
+        return "Hello, " + name + " !";
     }
 
     @Override
-    public int minus(int a, int b) {
-        return a-b;
+    public String sayBye(String name) {
+        return "Bye, " + name + " !";
     }
 }

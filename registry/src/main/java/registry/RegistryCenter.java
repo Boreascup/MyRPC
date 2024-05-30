@@ -1,7 +1,5 @@
 package registry;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,26 +9,27 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 维护一个map，key是服务名，value是服务端端口号和ip的自定义类的list
  * 客户端不需要知道服务器地址。客户端知道注册中心的地址和希望调用的服务的名字
  * 向注册中心发出查询请求，注册中心返回服务器的端口和ip(如果有多个，会用到负载均衡来选择一个）
- * 然后剩下的操作是一样的（吧？
+ * 然后剩下的操作是一样的
  * 考虑多线程问题
  */
 
 
-@Slf4j
 public class RegistryCenter {
-    private static Map<String, List<String>> serviceRegistry = new ConcurrentHashMap<>();
+    private static final Map<String, List<String>> serviceRegistry = new ConcurrentHashMap<>();
 
     public static void main(String[] args) {
-        int port = 2024;//注册中心端口
+        String host = "127.0.0.1";
+        int port = 2024;
         try {
             ServerSocket serverSocket = new ServerSocket(port);
-            System.out.println("Registry center running on port " + port);
+            System.out.println("注册中心运行地址为 " + host + ":" + port);
 
             while (true) {
                 try {
@@ -45,7 +44,7 @@ public class RegistryCenter {
         }
     }
     private static class ServiceHandler implements Runnable {
-        private Socket socket;
+        private final Socket socket;
 
         public ServiceHandler(Socket socket) {
             this.socket = socket;
@@ -62,18 +61,16 @@ public class RegistryCenter {
                     while ((serviceName = in.readLine()) != null) {
                         String serviceAddress = in.readLine();
                         registerService(serviceName, serviceAddress);
-                        out.println("Service " + serviceName + " registered with address " + serviceAddress);
+                        out.println("服务“" + serviceName + "” 已注册到注册中心，地址为" + serviceAddress);
                     }
                 } else if ("query".equals(requestType)) {
                     String serviceName = in.readLine();
                     List<String> addresses = serviceRegistry.get(serviceName);
                     if (addresses != null && !addresses.isEmpty()) {
-//                        for (String address : addresses) {
-//                            out.println(address);
-//                        }
-                        out.println(addresses.get(0));//如果有多个地址，只会返回第一个。这里可以加负载均衡！
+                        int i = new Random().nextInt(addresses.size());//如果有多个地址，会随便挑一个
+                        out.println(addresses.get(i));
                     } else {
-                        out.println("Service not found");
+                        out.println("未查询到该服务！");
                     }
                 }
 
