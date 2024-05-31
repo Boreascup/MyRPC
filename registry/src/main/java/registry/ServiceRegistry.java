@@ -1,18 +1,18 @@
 package registry;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-
+@Data
+@NoArgsConstructor
 public class ServiceRegistry {
-    private static final ServiceRegistry INSTANCE = new ServiceRegistry();
+    @Getter
+    private static final ServiceRegistry Instance = new ServiceRegistry();
     private final Map<String, List<String>> serviceRegistry = new ConcurrentHashMap<>();
-
-    private ServiceRegistry() {}
-
-    public static ServiceRegistry getInstance() {
-        return INSTANCE;
-    }
 
     public void registerService(String serviceName, String serviceAddress) {
         serviceRegistry.computeIfAbsent(serviceName, k -> new ArrayList<>()).add(serviceAddress);
@@ -27,4 +27,13 @@ public class ServiceRegistry {
             return "未查询到该服务！";
         }
     }
+
+    public String[] displayService(){
+        Set<String> keySet = serviceRegistry.keySet();
+        String[] serviceName = keySet.toArray(new String[0]);
+        if(serviceName.length > 0)
+            return serviceName;
+        else return new String[]{"注册中心未注册任何服务！"};
+    }
+
 }

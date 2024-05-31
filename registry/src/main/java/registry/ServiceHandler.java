@@ -18,19 +18,23 @@ public class ServiceHandler implements Runnable {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
-            String requestType = in.readLine(); // 读取请求类型（"register" 或 "query"）
-            Command command = null;
+            String requestType;
+            while ((requestType = in.readLine()) != null) { // 处理多个请求
+                Command command = null;
 
-            if ("register".equals(requestType)) {
-                command = new RegisterCommand();
-            } else if ("query".equals(requestType)) {
-                command = new DiscoverCommand();
-            }
+                if ("display".equals(requestType)){
+                    command = new DisplayCommand();
+                } else if ("register".equals(requestType)) {
+                    command = new RegisterCommand();
+                } else if ("query".equals(requestType)) {
+                    command = new DiscoverCommand();
+                }
 
-            if (command != null) {
-                command.execute(in, out);
-            } else {
-                out.println("无效的请求类型！");
+                if (command != null) {
+                    command.execute(in, out);
+                } else {
+                    out.println("无效的请求类型！");
+                }
             }
 
         } catch (IOException e) {
