@@ -69,7 +69,7 @@ public class HTTPClient implements TransportClient {
                     log.warn("在第" + attempt + "次尝试时连接超时,即将重试");
                 else log.warn("在第" + attempt + "次尝试时连接超时");
             } catch (ConnectException e) {
-                log.error("连接被拒绝，目标主机不可达。请检查端口号是否正确");
+                log.error("连接被拒绝，目标主机不可达。");
                 break;
             } catch (MalformedURLException e) {
                 log.error("URL格式不正确: " + e.getMessage(), e);

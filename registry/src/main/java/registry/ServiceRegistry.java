@@ -24,7 +24,7 @@ public class ServiceRegistry {
             int i = new Random().nextInt(addresses.size()); // 如果有多个地址，会随便挑一个
             return addresses.get(i);
         } else {
-            return "未查询到该服务！";
+            return "";
         }
     }
 

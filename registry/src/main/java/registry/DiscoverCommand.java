@@ -10,9 +10,10 @@ public class DiscoverCommand implements Command {
 
     @Override
     public void execute(BufferedReader in, PrintWriter out) throws IOException {
-        System.out.println("收到了query请求");
         String serviceName = in.readLine();
         String serviceAddress = registry.discoverService(serviceName);
         out.println(serviceAddress);
+
+        System.out.println(" - 接收到客户端的查询请求。已向客户端返回服务“" + serviceName + "”的地址信息");
     }
 }

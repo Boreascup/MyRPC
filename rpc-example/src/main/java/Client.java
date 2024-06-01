@@ -21,37 +21,41 @@ public class Client {
         int registryPort = -1;
         String serviceName = "";
 
-//
-//        System.out.println("请输入注册中心 ip 地址：");
-//        registryHost = String.valueOf(scanner.next());
-//        System.out.println("请输入注册中心端口号：");
-//        registryPort = scanner.nextInt();
-////        System.out.println("请输入要调用的服务名：");
-////        serviceName = String.valueOf(scanner.next());
+        //这一段往下是调试运行代码
+        System.out.println("请输入注册中心 ip 地址：");
+        registryHost = String.valueOf(scanner.next());
+        System.out.println("请输入注册中心端口号：");
+        registryPort = scanner.nextInt();
+//        System.out.println("请输入要调用的服务名：");
+//        serviceName = String.valueOf(scanner.next());
+        //这一段往上是调试运行代码
 
-        for (int i = 0; i < args.length; i++) {
-            switch (args[i]) {
-                case "-p":
-                    if (i + 1 < args.length)
-                        registryPort = Integer.parseInt(args[++i]);
-                    break;
-                case "-i":
-                    if (i + 1 < args.length)
-                        registryHost = args[++i];
-                    break;
-                case "-n":
-                    if (i + 1 < args.length)
-                        serviceName = String.valueOf(args[++i]);
-                    break;
-                case "-h":
-                    System.out.println("帮助：\n-p: 注册中心端口号，不得为空\n-i: 注册中心ip地址，不得为空\n-n: 需要调用的服务名称\n");
-                    System.exit(0);
-                    break;
-                default:
-                    System.out.println("未知参数：" + args[i]);
-                    System.exit(1);
-            }
-        }
+
+        //这一段往下是参数运行代码
+//        for (int i = 0; i < args.length; i++) {
+//            switch (args[i]) {
+//                case "-p":
+//                    if (i + 1 < args.length)
+//                        registryPort = Integer.parseInt(args[++i]);
+//                    break;
+//                case "-i":
+//                    if (i + 1 < args.length)
+//                        registryHost = args[++i];
+//                    break;
+//                case "-n":
+//                    if (i + 1 < args.length)
+//                        serviceName = String.valueOf(args[++i]);
+//                    break;
+//                case "-h":
+//                    System.out.println("帮助：\n-p: 注册中心端口号，不得为空\n-i: 注册中心ip地址，不得为空\n-n: 需要调用的服务名称\n");
+//                    System.exit(0);
+//                    break;
+//                default:
+//                    System.out.println("未知参数：" + args[i]);
+//                    System.exit(1);
+//            }
+//        }
+        //这一段往上是参数运行代码
 
         validateArgs(registryHost, registryPort);
 
@@ -75,7 +79,7 @@ public class Client {
                     }
                     System.out.println("\n------------------");
                     System.out.println("请输入需要调用的服务名称:");
-                    //scanner.nextLine(); //注意！！！！如果是控制台就把这一行注释掉
+                    scanner.nextLine(); //注意！！！！如果是控制台就把这一行注释掉
                     serviceName = scanner.nextLine();
                 }
 
@@ -83,7 +87,8 @@ public class Client {
                 out.println(serviceName);
                 if ((response = in.readLine()) != null) {
                     myresponse = response;
-                    //System.out.println("调用服务的地址为: " + response);
+                    if(myresponse.isEmpty())
+                        System.out.println("服务不存在");
                 }
 
             }
@@ -95,9 +100,13 @@ public class Client {
 
 
         //从注册中心返回信息中 获取端口号和ip地址
-        String[] address = new String[0];
+        String[] address = new String[2];
         if (myresponse != null) {
-            address = myresponse.split(":");
+            int lastIndex = myresponse.lastIndexOf(":");
+            if (lastIndex != -1) {
+                address[0] = myresponse.substring(0, lastIndex);
+                address[1] = myresponse.substring(lastIndex + 1);
+            }
         }
 
         //用获得的端口号和ip地址开启远程调用

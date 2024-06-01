@@ -33,6 +33,7 @@ public class RpcServer {
                 byte[] inBytes = IOUtils.readFully(receive, receive.available());
                 Request request = decoder.decode(inBytes, Request.class);
                 //log.info("获得请求: {}", request);
+                System.out.println("正在处理服务" + request.getService().getMethod() +"的远程调用");
 
                 ServiceInstance sis = serviceManager.lookup(request);
                 Object ret = serviceInvoker.invoke(sis, request);
@@ -49,6 +50,7 @@ public class RpcServer {
                 toResponse.write(responseBody);
                 //log.info("编码后的响应体：{}", new String(responseBody, StandardCharsets.UTF_8));
                 toResponse.flush();
+                System.out.println("处理成功\n-----------");
 
             } catch (Exception e) {
                 //log.warn(e.getMessage(), e);
@@ -59,6 +61,7 @@ public class RpcServer {
                 // 设置错误响应头
                 String errorHeaders = "HTTP/1.1 500 Internal Server Error\r\nContent-Type: application/json\r\n\r\n";
                 //log.info("已设置异常响应头");
+                System.err.println("处理失败");
                 try {
                     toResponse.write(errorHeaders.getBytes(StandardCharsets.UTF_8));
                 } catch (IOException ioException) {
@@ -90,19 +93,21 @@ public class RpcServer {
 
             out.println("register");
 
+            System.out.println("\n-----注册中心回复-----");
             for(int i=0; i<methods.length; i++){
                 out.println(methodName[i]);
                 out.println(serviceAddress);
                 String response = in.readLine();
-                System.out.println("注册中心回复: " + response);
+                System.out.println(" - " + response);
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("服务注册异常: " + e.getMessage());
         }
     }
 
     public void start(){
+        System.out.println("-------------\n服务端正在运行\n-------------");
         this.net.start();
     }
     public void stop(){

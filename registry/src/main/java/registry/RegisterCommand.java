@@ -17,6 +17,7 @@ public class RegisterCommand implements Command {
             String serviceAddress = in.readLine();
             registry.registerService(serviceName, serviceAddress);
             out.println("服务“" + serviceName + "” 已注册到注册中心");
+            System.out.println(" - 接收到服务端的注册请求。服务“" + serviceName + "” 已注册，地址为" + serviceAddress);
         }
     }
 }
