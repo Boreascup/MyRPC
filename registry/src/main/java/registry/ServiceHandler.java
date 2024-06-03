@@ -19,7 +19,7 @@ public class ServiceHandler implements Runnable {
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             String requestType;
-            while ((requestType = in.readLine()) != null) { // 处理多个请求
+            while ((requestType = in.readLine()) != null) {
                 Command command = null;
 
                 if ("display".equals(requestType)){

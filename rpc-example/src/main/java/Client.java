@@ -1,20 +1,14 @@
 import client.RpcClient;
 import lombok.extern.slf4j.Slf4j;
 import protocol.Peer;
+import registry.ServiceRegistry;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.util.Objects;
 import java.util.Scanner;
 
 @Slf4j
 public class Client {
-    public static void main(String[] args) {
+    public static void main(String[] args){
 
         Scanner scanner = new Scanner(System.in);
         String registryHost = "";
@@ -59,60 +53,32 @@ public class Client {
 
         validateArgs(registryHost, registryPort);
 
-        String response;
-        String myresponse = null;
-
-        try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(registryHost, registryPort), 5000);
-            socket.setSoTimeout(5000);
-
-            try (PrintWriter out = new  PrintWriter(socket.getOutputStream(), true);
-                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-
-                if("".equals(serviceName)){
-                    out.println("display");// 展示可调用服务列表
-                    System.out.println("\n---注册中心回复---\n\n[已注册服务列表]");
-
-                    while ((response = in.readLine()) != null && !response.isEmpty()) {
-                        myresponse = response;
-                        System.out.println(" - " + response);
-                    }
-                    System.out.println("\n------------------");
-                    System.out.println("请输入需要调用的服务名称:");
-                    scanner.nextLine(); //注意！！！！如果是控制台就把这一行注释掉
-                    serviceName = scanner.nextLine();
-                }
-
-                out.println("query"); // 查询指定的服务
-                out.println(serviceName);
-                if ((response = in.readLine()) != null) {
-                    myresponse = response;
-                    if(myresponse.isEmpty())
-                        System.out.println("服务不存在");
-                }
-
-            }
-        } catch (SocketTimeoutException e) {
-            System.out.println("连接失败，请检查注册中心是否启动或端口号是否输入错误");
+        String[] response;
+        try {
+            response = ServiceRegistry.connect(registryHost, registryPort, serviceName);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("连接到注册中心时异常：" + e.getMessage());
+            return;
         }
 
-
-        //从注册中心返回信息中 获取端口号和ip地址
         String[] address = new String[2];
-        if (myresponse != null) {
-            int lastIndex = myresponse.lastIndexOf(":");
+        if (response[1] != null) {
+            serviceName = response[0];
+            int lastIndex = response[1].lastIndexOf(":");
             if (lastIndex != -1) {
-                address[0] = myresponse.substring(0, lastIndex);
-                address[1] = myresponse.substring(lastIndex + 1);
+                address[0] = response[1].substring(0, lastIndex);
+                address[1] = response[1].substring(lastIndex + 1);
             }
+        }else{
+            System.err.println("未找到服务");
+            return;
         }
 
         //用获得的端口号和ip地址开启远程调用
         Peer peer = new Peer(address[0], Integer.parseInt(address[1]));
         RpcClient client = new RpcClient(peer);
         MyService service = client.getProxy(MyService.class);
+
 
         System.out.println("\n调用结果：");
         switch (serviceName){

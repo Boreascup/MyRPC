@@ -23,7 +23,7 @@ public class Server {
 
 
         RpcServer server = new RpcServer(port, ipAddress);
-        server.register(MyService.class, new ServiceImpl());
+        server. register(MyService.class, new ServiceImpl());
         server.start();
     }
 }

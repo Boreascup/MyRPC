@@ -13,7 +13,9 @@ public class DiscoverCommand implements Command {
         String serviceName = in.readLine();
         String serviceAddress = registry.discoverService(serviceName);
         out.println(serviceAddress);
-
-        System.out.println(" - 接收到客户端的查询请求。已向客户端返回服务“" + serviceName + "”的地址信息");
+        if("".equals(serviceAddress)){
+            System.out.println(" - 接收到客户端的查询请求。注册中心未能查找到服务“" + serviceName + "”的任何信息");
+        }
+        else System.out.println(" - 接收到客户端的查询请求。已向客户端返回服务“" + serviceName + "”的地址信息");
     }
 }
