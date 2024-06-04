@@ -4,6 +4,9 @@ import protocol.Peer;
 import registry.ServiceRegistry;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 @Slf4j
@@ -53,7 +56,10 @@ public class Client {
 
         validateArgs(registryHost, registryPort);
 
-        String[] response;
+
+        Map<String, List<String>> response;
+        List<Peer> peerList = new ArrayList<>();
+
         try {
             response = ServiceRegistry.connect(registryHost, registryPort, serviceName);
         } catch (IOException e) {
@@ -61,22 +67,20 @@ public class Client {
             return;
         }
 
-        String[] address = new String[2];
-        if (response[1] != null) {
-            serviceName = response[0];
-            int lastIndex = response[1].lastIndexOf("|");
-            if (lastIndex != -1) {
-                address[0] = response[1].substring(0, lastIndex);
-                address[1] = response[1].substring(lastIndex + 1);
+        for(Map.Entry<String, List<String>> entry : response.entrySet()){
+            serviceName = entry.getKey();
+            List<String> values = entry.getValue();
+            for (String value : values) {
+                String[] parts = value.split("\\|");
+                System.out.println("host: " + parts[0] + ", port: " + parts[1]);
+                peerList.add(new Peer(parts[0], Integer.parseInt(parts[1])));
             }
-        }else{
-            System.err.println("未找到服务");
-            return;
         }
 
+
         //用获得的端口号和ip地址开启远程调用
-        Peer peer = new Peer(address[0], Integer.parseInt(address[1]));
-        RpcClient client = new RpcClient(peer);
+        RpcClient client = new RpcClient(peerList);
+
         MyService service = client.getProxy(MyService.class);
 
 

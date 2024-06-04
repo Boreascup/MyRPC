@@ -6,6 +6,7 @@ import serialization.Decoder;
 import serialization.Encoder;
 
 import java.lang.reflect.Proxy;
+import java.util.List;
 
 public class RpcClient {
     private final RpcClientConfig config;
@@ -14,6 +15,10 @@ public class RpcClient {
     private final TransportSelector selector;
 
     public RpcClient(Peer peer){
+        this(new RpcClientConfig(peer));
+    }
+
+    public RpcClient(List<Peer> peer){
         this(new RpcClientConfig(peer));
     }
 

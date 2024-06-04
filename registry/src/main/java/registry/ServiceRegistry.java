@@ -25,13 +25,13 @@ public class ServiceRegistry {
         serviceRegistry.computeIfAbsent(serviceName, k -> new ArrayList<>()).add(serviceAddress);
     }
 
-    public String discoverService(String serviceName) {
+    public List<String> discoverService(String serviceName) {
         List<String> addresses = serviceRegistry.get(serviceName);
         if (addresses != null && !addresses.isEmpty()) {
-            int i = new Random().nextInt(addresses.size()); // 如果有多个地址，会随便挑一个
-            return addresses.get(i);
+            int i = new Random().nextInt(addresses.size());
+            return addresses;
         } else {
-            return "";
+            return Collections.singletonList("");
         }
     }
 
@@ -44,7 +44,7 @@ public class ServiceRegistry {
     }
 
 
-    public static String[] connect(String registryHost, int registryPort, String serviceName) throws IOException {
+    public static Map<String, List<String>> connect(String registryHost, int registryPort, String serviceName) throws IOException {
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(registryHost, registryPort), 5000);
             socket.setSoTimeout(5000);
@@ -65,18 +65,17 @@ public class ServiceRegistry {
                     Scanner scanner = new Scanner(System.in);
                     serviceName = scanner.nextLine();
                 }
-                String[] response = new String[2];
+
                 out.println("query"); // 查询指定的服务
                 out.println(serviceName);
 
-                response[0] = serviceName;
-                response[1] = in.readLine();
-                if (response[0] != null && !"".equals(response[1])) {
-                    return response;
-                } else {
-                    System.err.println("服务不存在");
-                    throw new IllegalStateException();
-                }
+                Map<String, List<String>> response = new HashMap<>();
+                String received = in.readLine();
+                List<String> addressList = Arrays.asList(received.substring(1, received.length()-1).split(", "));
+                response.put(serviceName, addressList);
+
+                return response;//没有处理服务不存在的异常！
+
             }
         } catch (SocketTimeoutException e) {
             System.out.println("连接超时，请检查注册中心是否启动或端口号是否输入错误");
