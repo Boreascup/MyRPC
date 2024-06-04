@@ -28,10 +28,9 @@ public class ServiceRegistry {
     public List<String> discoverService(String serviceName) {
         List<String> addresses = serviceRegistry.get(serviceName);
         if (addresses != null && !addresses.isEmpty()) {
-            int i = new Random().nextInt(addresses.size());
             return addresses;
         } else {
-            return Collections.singletonList("");
+            return Collections.emptyList();
         }
     }
 

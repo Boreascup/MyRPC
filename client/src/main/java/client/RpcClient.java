@@ -14,12 +14,8 @@ public class RpcClient {
     private final Decoder decoder;
     private final TransportSelector selector;
 
-    public RpcClient(Peer peer){
-        this(new RpcClientConfig(peer));
-    }
-
-    public RpcClient(List<Peer> peer){
-        this(new RpcClientConfig(peer));
+    public RpcClient(List<Peer> peerList){
+        this(new RpcClientConfig(peerList));
     }
 
     public RpcClient(RpcClientConfig rpcClientConfig) {

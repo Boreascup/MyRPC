@@ -32,7 +32,6 @@ public class HTTPClient implements TransportClient {
         while (!success && attempt < MAX_RETRIES) {
             attempt++;
             try {
-                //log.info("客户端正在向" + url + "发起连接请求");
                 URL urlObj = new URL(url);
                 HttpURLConnection httpConn = (HttpURLConnection) urlObj.openConnection();
                 httpConn.setConnectTimeout(timeoutMillis);
@@ -46,9 +45,6 @@ public class HTTPClient implements TransportClient {
                 try (OutputStream out = httpConn.getOutputStream()) {
                     IOUtils.copy(data, out);
                 }
-
-                //int contentLength = httpConn.getContentLength();
-                //log.info("Content-Length: " + contentLength);
 
                 int resultCode = httpConn.getResponseCode();
                 //log.info("resultCode = {}", resultCode);

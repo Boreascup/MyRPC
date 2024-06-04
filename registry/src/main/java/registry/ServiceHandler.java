@@ -22,12 +22,16 @@ public class ServiceHandler implements Runnable {
             while ((requestType = in.readLine()) != null) {
                 Command command = null;
 
-                if ("display".equals(requestType)){
-                    command = new DisplayCommand();
-                } else if ("register".equals(requestType)) {
-                    command = new RegisterCommand();
-                } else if ("query".equals(requestType)) {
-                    command = new DiscoverCommand();
+                switch (requestType) {
+                    case "display":
+                        command = new DisplayCommand();
+                        break;
+                    case "register":
+                        command = new RegisterCommand();
+                        break;
+                    case "query":
+                        command = new DiscoverCommand();
+                        break;
                 }
 
                 if (command != null) {
@@ -38,7 +42,7 @@ public class ServiceHandler implements Runnable {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("处理服务请求时出错: " + e.getMessage());
         }
     }
 }

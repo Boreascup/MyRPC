@@ -10,7 +10,7 @@ import java.util.List;
 
 @Slf4j
 public class RoundRobinTransportSelector implements TransportSelector{
-    private List<TransportClient> clients;
+    private final List<TransportClient> clients;
     private int index;
     public RoundRobinTransportSelector(){
         clients = new ArrayList<>();

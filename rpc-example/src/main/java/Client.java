@@ -56,7 +56,6 @@ public class Client {
 
         validateArgs(registryHost, registryPort);
 
-
         Map<String, List<String>> response;
         List<Peer> peerList = new ArrayList<>();
 
@@ -70,19 +69,21 @@ public class Client {
         for(Map.Entry<String, List<String>> entry : response.entrySet()){
             serviceName = entry.getKey();
             List<String> values = entry.getValue();
+
             for (String value : values) {
                 String[] parts = value.split("\\|");
+                if(parts.length != 2){
+                    System.out.println("服务不存在！");
+                    System.exit(1);
+                }
                 System.out.println("host: " + parts[0] + ", port: " + parts[1]);
                 peerList.add(new Peer(parts[0], Integer.parseInt(parts[1])));
             }
         }
 
-
         //用获得的端口号和ip地址开启远程调用
         RpcClient client = new RpcClient(peerList);
-
         MyService service = client.getProxy(MyService.class);
-
 
         System.out.println("\n调用结果：");
         switch (serviceName){
@@ -98,7 +99,7 @@ public class Client {
     }
 
     public static void validateArgs(String registryHost, int registryPort){
-        if(registryHost == ""){
+        if("".equals(registryHost)){
             System.out.println("请输入注册中心 ip 地址！");
             System.exit(1);
         }

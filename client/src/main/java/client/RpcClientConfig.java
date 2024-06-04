@@ -10,7 +10,6 @@ import serialization.JsonEncoder;
 import transport.HTTPClient;
 import transport.TransportClient;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,11 +20,7 @@ public class RpcClientConfig {
     private Class<? extends TransportSelector> selectorClass =
             RoundRobinTransportSelector.class;
     private int connectCount = 1;
-    private List<Peer> servers = new ArrayList<>();
-
-    public RpcClientConfig(Peer peer){
-        this.servers.add(peer);
-    }
+    private List<Peer> servers;
 
     public RpcClientConfig(List<Peer> peer){
         this.servers = peer;
