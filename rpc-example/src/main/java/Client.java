@@ -64,7 +64,7 @@ public class Client {
         String[] address = new String[2];
         if (response[1] != null) {
             serviceName = response[0];
-            int lastIndex = response[1].lastIndexOf(":");
+            int lastIndex = response[1].lastIndexOf("|");
             if (lastIndex != -1) {
                 address[0] = response[1].substring(0, lastIndex);
                 address[1] = response[1].substring(lastIndex + 1);

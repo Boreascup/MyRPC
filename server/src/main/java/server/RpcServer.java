@@ -78,7 +78,7 @@ public class RpcServer {
     }
 
     public<T> void registerToCenter(Class<T> interfaceClass){
-        String serviceAddress = config.getIpAddress() + ":" + config.getPort(); // 服务器运行地址
+        String serviceAddress = config.getIpAddress() + "|" + config.getPort(); // 服务器运行地址
         String registryHost = "127.0.0.1"; // 注册中心地址
         int registryPort = 2024; // 注册中心端口
         Method[] methods = ReflectionUtils.getPublicMethods(interfaceClass);
