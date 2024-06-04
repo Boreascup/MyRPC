@@ -22,6 +22,7 @@ public class HTTPServer implements TransportServer {
             this.serverSocket = new ServerSocket(port);
         } catch (IOException e) {
             log.error("初始化失败: {}", e.getMessage());
+            System.exit(1);
         }
     }
 

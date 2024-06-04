@@ -17,7 +17,7 @@ public class RoundRobinTransportSelector implements TransportSelector{
         index = 0;
     }
     @Override
-    public void init(List<Peer> peers, int count, Class<? extends TransportClient> clazz) {
+    public synchronized void init(List<Peer> peers, int count, Class<? extends TransportClient> clazz) {
         count = Math.max(count, 1);
         for(Peer peer : peers){
             for(int i=0; i<count; i++){
@@ -30,19 +30,19 @@ public class RoundRobinTransportSelector implements TransportSelector{
     }
 
     @Override
-    public TransportClient select() {
+    public synchronized TransportClient select() {
         TransportClient client = clients.get(index);
         index = (index + 1) % clients.size();
         return client;
     }
 
     @Override
-    public void release(TransportClient client) {
+    public synchronized void release(TransportClient client) {
         clients.add(client);
     }
 
     @Override
-    public void close() {
+    public synchronized void close() {
         for(TransportClient client : clients){
             client.close();
         }

@@ -20,10 +20,14 @@ public class RpcClientConfig {
     private Class<? extends Decoder> decoderClass = JsonDecoder.class;
     private Class<? extends TransportSelector> selectorClass =
             RoundRobinTransportSelector.class;
-    private int connectCount = 3;
+    private int connectCount = 1;
     private List<Peer> servers = new ArrayList<>();
 
     public RpcClientConfig(Peer peer){
         this.servers.add(peer);
+    }
+
+    public RpcClientConfig(List<Peer> peer){
+        this.servers = peer;
     }
 }
