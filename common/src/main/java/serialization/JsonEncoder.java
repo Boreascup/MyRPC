@@ -9,5 +9,4 @@ public class JsonEncoder implements Encoder{
     public byte[] encode(Object obj) {
         return JSON.toJSONBytes(obj);
     }
-
 }

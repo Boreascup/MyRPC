@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 
 @Slf4j
 public class RpcServer {
-    private final RpcServerConfig  config;//自己的配置
+    private final RpcServerConfig config;//自己的配置
     private final TransportServer net;
     private final Encoder encoder;
     private final Decoder decoder;
@@ -28,39 +28,35 @@ public class RpcServer {
         @Override
         public void onRequest(InputStream receive, OutputStream toResponse) {
             Response response = new Response();
-            //log.info("onRequest开始调用");
+
             try {
+                //读取请求
                 byte[] inBytes = IOUtils.readFully(receive, receive.available());
                 Request request = decoder.decode(inBytes, Request.class);
-                //log.info("获得请求: {}", request);
+
                 System.out.println("正在处理服务" + request.getService().getMethod() +"的远程调用");
 
+                //调用服务，把调用结果存进response里
                 ServiceInstance sis = serviceManager.lookup(request);
                 Object ret = serviceInvoker.invoke(sis, request);
                 response.setData(ret);
-                //log.info("设置完数据后的回复: {}", response);
 
-                // 设置响应头
+                //设置响应头
                 String responseHeaders = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n";
-
                 byte[] responseBody = encoder.encode(response);
                 responseHeaders += "Content-Length: " + responseBody.length + "\r\n\r\n";
                 toResponse.write(responseHeaders.getBytes(StandardCharsets.UTF_8));
-                //log.info("已设置正常响应头");
+
+                //设置响应体
                 toResponse.write(responseBody);
-                //log.info("编码后的响应体：{}", new String(responseBody, StandardCharsets.UTF_8));
+
                 toResponse.flush();
                 System.out.println("处理成功\n-----------");
 
             } catch (Exception e) {
-                //log.warn(e.getMessage(), e);
-                response.fail("RPCServer发生异常: "
-                        + e.getClass().getName()
-                        + ": " + e.getMessage());
-
+                response.fail("RPCServer发生异常: " + e.getClass().getName() + ": " + e.getMessage());
                 // 设置错误响应头
                 String errorHeaders = "HTTP/1.1 500 Internal Server Error\r\nContent-Type: application/json\r\n\r\n";
-                //log.info("已设置异常响应头");
                 System.err.println("处理失败");
                 try {
                     toResponse.write(errorHeaders.getBytes(StandardCharsets.UTF_8));
@@ -81,6 +77,7 @@ public class RpcServer {
         String serviceAddress = config.getIpAddress() + "|" + config.getPort(); // 服务器运行地址
         String registryHost = "127.0.0.1"; // 注册中心地址
         int registryPort = 2024; // 注册中心端口
+
         Method[] methods = ReflectionUtils.getPublicMethods(interfaceClass);
         String[] methodName = new String[methods.length];
         for (int i = 0; i < methods.length; i++) {

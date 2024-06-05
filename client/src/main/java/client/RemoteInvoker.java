@@ -49,7 +49,6 @@ public class RemoteInvoker implements InvocationHandler {
         if(resp == null || resp.getCode()!=0){
             throw new IllegalStateException("RPC远程调用失败, " + resp.getMessage());
         }
-        //log.info("RPC调用成功！");
         return resp.getData();
     }
 

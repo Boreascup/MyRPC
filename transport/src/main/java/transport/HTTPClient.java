@@ -70,12 +70,10 @@ public class HTTPClient implements TransportClient {
             } catch (MalformedURLException e) {
                 log.error("URL格式不正确: " + e.getMessage(), e);
                 break;
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("发生异常：" + e.getMessage());
                 break;
             }
-
             if (!success && attempt < MAX_RETRIES) {
                 try {
                     Thread.sleep(1000 * attempt);

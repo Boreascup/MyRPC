@@ -20,10 +20,6 @@ public interface TransportSelector {
      */
     TransportClient select();
 
-    /**
-     * 释放用完的client
-     * @param client
-     */
     void release(TransportClient client);
 
     void close();

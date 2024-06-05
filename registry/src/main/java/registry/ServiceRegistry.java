@@ -51,10 +51,10 @@ public class ServiceRegistry {
             try (PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                  BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
+                //客户端启动参数不包含服务名的情况
                 if ("".equals(serviceName)) {
                     out.println("display"); // 展示可调用服务列表
                     System.out.println("\n---注册中心回复---\n\n[已注册服务列表]");
-
                     String response;
                     while ((response = in.readLine()) != null && !response.isEmpty()) {
                         System.out.println(" - " + response);
@@ -65,6 +65,7 @@ public class ServiceRegistry {
                     serviceName = scanner.nextLine();
                 }
 
+                //此时服务名一定不为空
                 out.println("query"); // 查询指定的服务
                 out.println(serviceName);
 
@@ -73,8 +74,7 @@ public class ServiceRegistry {
                 List<String> addressList = Arrays.asList(received.substring(1, received.length()-1).split(", "));
                 response.put(serviceName, addressList);
 
-                return response;//没有处理服务不存在的异常！
-
+                return response;
             }
         } catch (SocketTimeoutException e) {
             System.out.println("连接超时，请检查注册中心是否启动或端口号是否输入错误");

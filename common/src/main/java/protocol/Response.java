@@ -15,5 +15,4 @@ public class Response {
         this.code = 1;
         this.message = message;
     }
-
 }

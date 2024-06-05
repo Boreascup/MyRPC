@@ -18,7 +18,7 @@ public class RpcClientConfig {
     private Class<? extends Encoder> encoderClass = JsonEncoder.class;
     private Class<? extends Decoder> decoderClass = JsonDecoder.class;
     private Class<? extends TransportSelector> selectorClass =
-            RoundRobinTransportSelector.class;
+            RandomTransportSelector.class;
     private int connectCount = 1;
     private List<Peer> servers;
 

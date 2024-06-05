@@ -8,17 +8,21 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 public class HTTPServer implements TransportServer {
     private RequestHandler handler;
     private ServerSocket serverSocket;
+    private ExecutorService threadPool;
     private boolean running;
 
     @Override
     public void init(int port, RequestHandler handler) {
         this.handler = handler;
         try {
+            threadPool = Executors.newFixedThreadPool(10);
             this.serverSocket = new ServerSocket(port);
         } catch (IOException e) {
             log.error("初始化失败: {}", e.getMessage());
@@ -37,8 +41,7 @@ public class HTTPServer implements TransportServer {
         while (running) {
             try {
                 Socket clientSocket = serverSocket.accept();
-                new Thread(() -> handleRequest(clientSocket)).start();
-                //log.info("服务器已与一个客户端建立连接");
+                threadPool.execute(() -> handleRequest(clientSocket)); // 提交任务到线程池
             } catch (IOException e) {
                 log.error("与客户端连接失败: {}", e.getMessage());
             }
