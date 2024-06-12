@@ -34,7 +34,7 @@ public class RpcServer {
                 byte[] inBytes = IOUtils.readFully(receive, receive.available());
                 Request request = decoder.decode(inBytes, Request.class);
 
-                System.out.println("正在处理服务" + request.getService().getMethod() +"的远程调用");
+                System.out.println("----------\n正在处理服务" + request.getService().getMethod() +"的远程调用");
 
                 //调用服务，把调用结果存进response里
                 ServiceInstance sis = serviceManager.lookup(request);

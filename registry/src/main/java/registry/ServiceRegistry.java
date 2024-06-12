@@ -14,15 +14,34 @@ import java.net.SocketTimeoutException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static registry.ServiceRegistry.removeTimeOutService;
+
 @Data
 @NoArgsConstructor
 public class ServiceRegistry {
     @Getter
     private static final ServiceRegistry Instance = new ServiceRegistry();
-    private final Map<String, List<String>> serviceRegistry = new ConcurrentHashMap<>();
+    private static final Map<String, List<String>> serviceRegistry = new ConcurrentHashMap<>();
 
     public void registerService(String serviceName, String serviceAddress) {
         serviceRegistry.computeIfAbsent(serviceName, k -> new ArrayList<>()).add(serviceAddress);
+    }
+
+    public static void removeTimeOutService(String serviceAddr) {
+        Iterator<Map.Entry<String, List<String>>> iterator = serviceRegistry.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry<String, List<String>> entry = iterator.next();
+            List<String> addresses = entry.getValue();
+
+            // 使用迭代器删除List中的元素
+            addresses.removeIf(address -> address.equals(serviceAddr));
+
+            // 如果List为空，删除对应的Key
+            if (addresses.isEmpty()) {
+                iterator.remove();
+            }
+        }
     }
 
     public List<String> discoverService(String serviceName) {
@@ -84,4 +103,36 @@ public class ServiceRegistry {
         }
     }
 
+}
+
+
+class HeartbeatChecker implements Runnable {
+    private static final long HEARTBEAT_TIMEOUT = 30000; // 超时时间为30秒
+    @Override
+    public void run() {
+        while (true) {
+            long currentTime = System.currentTimeMillis();
+            ConcurrentHashMap<String, Long> serviceHeartbeatMap = RegistryCenter.getServiceHeartbeatMap();
+
+            // 使用迭代器遍历并移除超时的服务
+            Iterator<Map.Entry<String, Long>> iterator = serviceHeartbeatMap.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, Long> entry = iterator.next();
+                String serviceAddr = entry.getKey();
+                long lastHeartbeat = entry.getValue();
+
+                if (currentTime - lastHeartbeat > HEARTBEAT_TIMEOUT) {
+                    System.out.println(" - 未检测到部署于" + serviceAddr + "的服务心跳，服务已下线!");
+                    iterator.remove(); // 移除超时的服务
+                    removeTimeOutService(serviceAddr);
+                }
+            }
+
+            try {
+                Thread.sleep(10000); // 每10秒检查一次
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

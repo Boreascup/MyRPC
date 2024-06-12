@@ -1,4 +1,5 @@
 import server.RpcServer;
+import server.ServiceHeartbeatSender;
 
 import java.util.Scanner;
 
@@ -21,10 +22,14 @@ import java.util.Scanner;
 //            ipAddress = inputIpAddress;
 //        }
 //
-//
 //        RpcServer server = new RpcServer(port, ipAddress);
 //        server.register(MyService.class, new ServiceImpl());
+//
+//        String host = ipAddress + "|" + port;
+//        new Thread(new ServiceHeartbeatSender("127.0.0.1", 2024, host)).start();
+//
 //        server.start();
+//
 //    }
 //}
 
@@ -62,6 +67,10 @@ public class Server {
 
         RpcServer server = new RpcServer(port, ipAddress);
         server.register(MyService.class, new ServiceImpl());
+
+        String host = ipAddress + "|" + port;
+        new Thread(new ServiceHeartbeatSender("127.0.0.1", 2024, host)).start();
+
         server.start();
     }
 }

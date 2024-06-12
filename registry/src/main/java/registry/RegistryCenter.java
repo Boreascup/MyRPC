@@ -1,17 +1,27 @@
 package registry;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import lombok.Getter;
+
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class RegistryCenter {
+    // 获取心跳时间
+    @Getter
+    private static final ConcurrentHashMap<String, Long> serviceHeartbeatMap = new ConcurrentHashMap<>();
+
     public static void main(String[] args) {
         String host = "127.0.0.1";
         int port = 2024;
         ServerSocket serverSocket = null;
         ExecutorService executorService = Executors.newFixedThreadPool(20);
+
+        // 启动心跳检测线程
+        new Thread(new HeartbeatChecker()).start();
 
         try {
             serverSocket = new ServerSocket(port);
@@ -38,6 +48,13 @@ public class RegistryCenter {
             executorService.shutdown();
         }
     }
+
+    // 更新心跳时间
+    public static void updateHeartbeat(String serviceAddr) {
+        serviceHeartbeatMap.put(serviceAddr, System.currentTimeMillis());
+    }
+
 }
+
 
 

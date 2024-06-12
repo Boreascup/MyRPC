@@ -22,8 +22,8 @@ public class Client {
 //        registryHost = String.valueOf(scanner.next());
 //        System.out.println("请输入注册中心端口号：");
 //        registryPort = scanner.nextInt();
-////        System.out.println("请输入要调用的服务名：");
-////        serviceName = String.valueOf(scanner.next());
+//        System.out.println("请输入要调用的服务名：");
+//        serviceName = String.valueOf(scanner.next());
         //这一段往上是调试运行代码
 
 
