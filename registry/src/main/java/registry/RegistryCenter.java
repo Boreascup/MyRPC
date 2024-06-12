@@ -5,8 +5,6 @@ import lombok.Getter;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,35 +56,5 @@ public class RegistryCenter {
 
 }
 
-class HeartbeatChecker implements Runnable {
-    private static final long HEARTBEAT_TIMEOUT = 30000; // 30秒
-
-    @Override
-    public void run() {
-        while (true) {
-            long currentTime = System.currentTimeMillis();
-            ConcurrentHashMap<String, Long> serviceHeartbeatMap = RegistryCenter.getServiceHeartbeatMap();
-
-            // 使用迭代器遍历并移除超时的服务
-            Iterator<Map.Entry<String, Long>> iterator = serviceHeartbeatMap.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<String, Long> entry = iterator.next();
-                String serviceName = entry.getKey();
-                long lastHeartbeat = entry.getValue();
-
-                if (currentTime - lastHeartbeat > HEARTBEAT_TIMEOUT) {
-                    System.out.println("服务 " + serviceName + " 已超时");
-                    iterator.remove(); // 移除超时的服务
-                }
-            }
-
-            try {
-                Thread.sleep(10000); // 每10秒检查一次
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
 
 
