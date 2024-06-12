@@ -36,7 +36,6 @@ public class HTTPServer implements TransportServer {
             log.error("serverSocket为空，初始化失败");
             return;
         }
-
         running = true;
         while (running) {
             try {

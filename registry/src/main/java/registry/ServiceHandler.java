@@ -32,6 +32,11 @@ public class ServiceHandler implements Runnable {
                     case "query":
                         command = new DiscoverCommand();
                         break;
+                    case "heartbeat":
+                        String serviceAddr = in.readLine();
+                        System.out.println("部署在" + serviceAddr + "的服务发来了心跳");
+                        RegistryCenter.updateHeartbeat(serviceAddr);
+                        break;
                 }
 
                 if (command != null) {
@@ -42,7 +47,7 @@ public class ServiceHandler implements Runnable {
             }
 
         } catch (IOException e) {
-            System.err.println("处理服务请求时出错: " + e.getMessage());
+           // System.err.println("处理服务请求时出错: " + e.getMessage());
         }
     }
 }
